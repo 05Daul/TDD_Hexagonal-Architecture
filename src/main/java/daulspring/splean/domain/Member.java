@@ -1,35 +1,38 @@
 package daulspring.splean.domain;
 
-
-import jakarta.persistence.OneToMany;
-import java.util.Objects;
-import java.util.regex.Pattern;
-import lombok.Getter;
-import lombok.ToString;
+import jakarta.persistence.Embedded;
 import org.springframework.util.Assert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @ToString
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
+  @Id
+  private  Long id;
+
+  @Embedded
   private Email email;
+
   private String nickname;
+
   private String passwordHash;
+
+  @Enumerated
   private MemberStatus memberStatus;
 
-  public Member() {
-  }
-
- /* private Member(String email, String nickname, String passwordHash) {
-    this.email = Objects.requireNonNull(email);
-    this.nickname = Objects.requireNonNull(nickname);
-    this.passwordHash = passwordHash;
-    this.memberStatus = MemberStatus.PENDING;
-  }*/
-
-  public static Member create(MemberCreateRequest createRequest, PasswordEncoder passwordEncoder) {
+  public static Member register(MemberRegisterRequest createRequest,
+      PasswordEncoder passwordEncoder) {
     Member member = new Member();
-
     member.email = new Email(createRequest.email());
     member.nickname = Objects.requireNonNull(createRequest.nickname());
     member.passwordHash = Objects.requireNonNull(passwordEncoder.encode(createRequest.password()));
@@ -55,6 +58,7 @@ public class Member {
   }
 
   public void changeNickname(String nickname) {
+
     this.nickname = Objects.requireNonNull(nickname);
   }
 
