@@ -20,11 +20,11 @@ class MemberTest {
 
   }
 
-  private static MemberRegisterRequest creatMemberRegisterRequest() {
+  public static MemberRegisterRequest creatMemberRegisterRequest() {
     return new MemberRegisterRequest("elre@naver.com", "daul", "secret");
   }
 
-  private static PasswordEncoder createPasswordEncoder() {
+  public static PasswordEncoder createPasswordEncoder() {
     return new PasswordEncoder() {
       @Override
       public String encode(String rawPassword) {
@@ -91,13 +91,25 @@ class MemberTest {
   }
 
   @Test
+  void shouldBeActive(){
+    assertThat(member.isActive()).isFalse();
+    member.activate();
+    assertThat(member.isActive()).isTrue();
+    member.deactivate();
+    assertThat(member.isActive()).isFalse();
+
+  }
+
+  @Test
   void invaildEmail() {
     assertThatThrownBy(()->
-        Member.register(new MemberRegisterRequest("invaild","dau;","secret"),passwordEncoder)
+        Member.register(creatMemberRegisterRequest("invaild email"),passwordEncoder)
     ).isInstanceOf(IllegalArgumentException.class);
+    Member.register(creatMemberRegisterRequest(),passwordEncoder);
+  }
 
-    Member.register(new MemberRegisterRequest("elre519@naver.com","dau;","secret"),passwordEncoder);
-
+  private MemberRegisterRequest creatMemberRegisterRequest(String invaildEmail) {
+    return null;
   }
 
 }

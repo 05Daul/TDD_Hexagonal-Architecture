@@ -1,6 +1,12 @@
 package daulspring.splean.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.springframework.util.Assert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -15,19 +21,22 @@ import lombok.ToString;
 @ToString
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NaturalIdCache
 public class Member {
 
   @Id
-  private  Long id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Embedded
+  @NaturalId
   private Email email;
 
   private String nickname;
 
   private String passwordHash;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   private MemberStatus memberStatus;
 
   public static Member register(MemberRegisterRequest createRequest,
